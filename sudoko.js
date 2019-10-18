@@ -11,13 +11,14 @@ var unsolved = [
 ];
 console.log("this is your unSolved sudoku puzzle:-\n", unsolved);
 
-
 // puzzle solver start from here.
 function sudokuPuzzle(puzzle){
-	var emptyCell = 1;
+	var nonpossiableNumber = {};
+	var impossiableNumber = {};
+	var emptySpaces = 1;
 	// this loop going for whole 81 boxes.
-	while (emptyCell > 0){
-		emptyCell = 0;
+	while (emptySpaces > 0){
+		emptySpaces = 0;
 		// this loop for columns
 		for (var vert = 0; vert < puzzle.length; vert++){ 
 			// this loop for rows
@@ -25,24 +26,56 @@ function sudokuPuzzle(puzzle){
 	        	// this line checking in whole puzzle zero value.
 	            if ((puzzle[vert][horz]) === 0){
 	            	// this is variable storing the possiable value.
-		           storePosiableNumber = [];
-		        //    this loop for store the possiable value in object.
+		           nonpossiableNumber = {};
+		           // this loop for store the possiable value in object.
 		            for(let i =0;i< puzzle.length; i++){
 		            	// this condition checking row.
 		              	if (puzzle[vert][i] >0){
-		              		console.log(puzzle[vert][i]);
-		              		
+		              		// console.log(puzzle[vert][i]);
+		              		// this objet storing the possiable keys and value.
+		              		nonpossiableNumber[puzzle[vert][i]] = true;
+		              		// console.log(nonpossiableNumber)
+		              	}
+		              	// this condition checking columns and storing a value inside the object.
+		              	if(puzzle[i][horz] > 0){
+		              		nonpossiableNumber[puzzle[i][horz]] = true;
 		              	}
 		            }  	
+		            // this loop for columns 3*3 grid.
+					for (let gridVert = Math.floor(vert/3)*3; gridVert<  Math.floor(vert/3)*3+3; gridVert++ ){
+						// this loop for rows 3*3 grid.
+						for (let gridHorz = Math.floor(horz/3)*3; gridHorz< Math.floor(horz/3)*3+3; gridHorz++ ){
+							if (puzzle[gridVert][gridHorz]){
+								// here stroing all the grids data in object.
+								nonpossiableNumber[puzzle[gridVert][gridHorz]] = true;
+							}
+						}
+					}
+					//  in this line getting all the keys from object.
+					impossiableNumber = Object.keys(nonpossiableNumber);
+					// console.log(impossiableNumber);
+					if(impossiableNumber.length === 8){
+						// this loop is working for replacing value from puzzle.
+						for( let num = 1; num < 10; num++){
+							if(impossiableNumber.indexOf(num.toString()) < 0){
+								puzzle[vert][horz]= num;
+							}
+						}
+						
+					}
+					else{
+						emptySpaces++;
+						}
 	           	 	}
 	        	}
 	    	}
 		
 	
-	}
+	}return puzzle;
 
 }
-let funCall = sudokuPuzzle(unsolved);
 
+let funCall = sudokuPuzzle(unsolved);
+console.log("solver Puzzle :-\n",funCall );
 
 
